@@ -1,8 +1,3 @@
---[[
-	FOX STORE | Painel de Debug para Roblox
-	Carregar com: loadstring(game:HttpGet("SEU_LINK_RAW"))()
-]]
-
 local RunService=game:GetService("RunService")
 local Players=game:GetService("Players")
 local UIS=game:GetService("UserInputService")
@@ -11,27 +6,17 @@ local LP=Players.LocalPlayer
 local CAM=workspace.CurrentCamera
 
 local cfg={
-	-- ESP
-	esp_on=false, esp_box=false, esp_name=false, esp_hp=false, esp_hpbar=false,
-	esp_tracer=false, esp_box2d=false, esp_team_color=true,
-	c_enemy=Color3.fromRGB(239,68,68), c_team=Color3.fromRGB(74,222,128),
-	esp_range=500,
-	-- Aimbot
-	aim_on=false, aim_key=Enum.UserInputType.MouseButton2, aim_fov=150,
-	aim_smooth=0.15, aim_team=true, aim_toggle=false, aim_show_fov=false,
-	aim_prediction=0, c_aim=Color3.fromRGB(239,68,68),
-	-- Trigger
-	trig_on=false, trig_auto=false, trig_key=Enum.KeyCode.F, trig_delay=0.05,
-	-- Movimento
-	speed_on=false, speed_val=50,
-	fly_on=false, fly_speed=80,
-	jump_on=false, noclip_on=false, antiafk_on=false,
-	-- Visual
-	cross=false, cross_size=12, c_cross=Color3.fromRGB(192,38,211),
-	fullbright=false, fullbright_val=3, fps_show=false,
-	-- Proteção
-	antivoid=false, antifling=false,
-	-- Menu
+	esp_on=false,esp_box=false,esp_name=false,esp_hp=false,esp_hpbar=false,
+	esp_tracer=false,esp_box2d=false,
+	c_enemy=Color3.fromRGB(239,68,68),c_team=Color3.fromRGB(74,222,128),esp_range=500,
+	aim_on=false,aim_key=Enum.UserInputType.MouseButton2,aim_fov=150,
+	aim_smooth=15,aim_team=true,aim_toggle=false,aim_show_fov=false,
+	aim_prediction=0,c_aim=Color3.fromRGB(239,68,68),
+	trig_on=false,trig_auto=false,trig_key=Enum.KeyCode.F,trig_delay=5,
+	speed_on=false,speed_val=50,fly_on=false,fly_speed=80,
+	jump_on=false,noclip_on=false,antiafk_on=false,
+	cross=false,cross_size=12,fullbright=false,fullbright_val=3,fps_show=false,
+	antivoid=false,antifling=false,
 	menu_key=Enum.KeyCode.Insert,
 }
 
@@ -96,7 +81,7 @@ local sub=Instance.new("TextLabel")
 sub.Size=UDim2.new(1,-90,1,0)
 sub.Position=UDim2.fromOffset(14,16)
 sub.BackgroundTransparency=1
-sub.Text="painel de debug"
+sub.Text="painel"
 sub.TextColor3=Color3.fromRGB(200,180,255)
 sub.TextSize=10
 sub.Font=Enum.Font.Gotham
@@ -116,7 +101,6 @@ closeBtn.Parent=hdr
 local cc=Instance.new("UICorner") cc.CornerRadius=UDim.new(0,8) cc.Parent=closeBtn
 closeBtn.MouseButton1Click:Connect(function() win.Visible=false end)
 
--- Abas
 local tabBar=Instance.new("Frame")
 tabBar.Size=UDim2.new(1,-20,0,30)
 tabBar.Position=UDim2.fromOffset(10,54)
@@ -129,14 +113,11 @@ tabList.Parent=tabBar
 
 local pages={}
 local tabBtns={}
-local currentPage=nil
-
 local function showPage(name)
 	for n,p in pairs(pages) do p.Visible=(n==name) end
 	for n,b in pairs(tabBtns) do
 		b.BackgroundColor3=(n==name) and C_UI or C_ROW
 	end
-	currentPage=name
 end
 
 local function newPage(name,titleTab)
@@ -179,7 +160,6 @@ local function section(parent,texto)
 	l.Font=Enum.Font.GothamBold
 	l.TextXAlignment=Enum.TextXAlignment.Left
 	l.Parent=parent
-	return l
 end
 
 local function row(parent)
@@ -255,21 +235,18 @@ local function slider(parent,texto,key,min,max)
 	val.Font=Enum.Font.GothamBold
 	val.TextXAlignment=Enum.TextXAlignment.Right
 	val.Parent=r
-
 	local function set(v)
 		cfg[key]=v
 		fill.Size=UDim2.new((v-min)/(max-min),0,1,0)
 		val.Text=tostring(math.floor(v))
 	end
 	set(cfg[key])
-
 	local hit=Instance.new("TextButton")
 	hit.Size=UDim2.new(0.32,0,0,20)
 	hit.Position=UDim2.new(0.42,0,0.5,-10)
 	hit.BackgroundTransparency=1
 	hit.Text=""
 	hit.Parent=r
-
 	local dragging=false
 	local function fromX(x)
 		local a=math.clamp((x-bar.AbsolutePosition.X)/bar.AbsoluteSize.X,0,1)
@@ -346,75 +323,63 @@ local function keybindRow(parent,labelText,keyCfg)
 	end)
 end
 
--- === PAGINA ESP ===
+-- PAGINAS
 local pEsp=newPage("esp","ESP")
 section(pEsp,"GERAL")
 botao(pEsp,"Ativar ESP","esp_on")
 botao(pEsp,"Contorno","esp_box")
 botao(pEsp,"Caixa 2D","esp_box2d")
-botao(pEsp,"Linha (tracer)","esp_tracer")
-section(pEsp,"INFORMACOES")
+botao(pEsp,"Tracer","esp_tracer")
+section(pEsp,"INFO")
 botao(pEsp,"Nomes","esp_name")
-botao(pEsp,"Vida (texto)","esp_hp")
-botao(pEsp,"Vida (barra)","esp_hpbar")
+botao(pEsp,"Vida texto","esp_hp")
+botao(pEsp,"Vida barra","esp_hpbar")
 slider(pEsp,"Alcance","esp_range",50,2000)
 
--- === PAGINA AIMBOT ===
 local pAim=newPage("aim","AIM")
 section(pAim,"AIMBOT")
-botao(pAim,"Ativar Aimbot","aim_on")
-botao(pAim,"Modo toggle","aim_toggle")
-botao(pAim,"Mostrar FOV","aim_show_fov")
+botao(pAim,"Ativar","aim_on")
+botao(pAim,"Toggle","aim_toggle")
+botao(pAim,"FOV","aim_show_fov")
 botao(pAim,"Ignorar time","aim_team")
-keybindRow(pAim,"Tecla Aimbot","aim_key")
+keybindRow(pAim,"Tecla","aim_key")
 slider(pAim,"FOV","aim_fov",20,600)
-slider(pAim,"Suavidade x100","aim_smooth",0,90)
+slider(pAim,"Smooth x100","aim_smooth",0,90)
 slider(pAim,"Predicao x100","aim_prediction",0,100)
 
--- === PAGINA TRIGGER ===
 local pTrig=newPage("trig","TRIG")
-section(pTrig,"TRIGGERBOT")
-botao(pTrig,"Trigger segurar","trig_on")
-botao(pTrig,"Trigger AUTO","trig_auto")
-keybindRow(pTrig,"Tecla Trigger","trig_key")
+section(pTrig,"TRIGGER")
+botao(pTrig,"Segurar","trig_on")
+botao(pTrig,"AUTO","trig_auto")
+keybindRow(pTrig,"Tecla","trig_key")
 slider(pTrig,"Delay ms","trig_delay",1,50)
 
--- === PAGINA MOV ===
 local pMov=newPage("mov","MOV")
-section(pMov,"VELOCIDADE")
+section(pMov,"VEL")
 botao(pMov,"Speed","speed_on")
-slider(pMov,"Velocidade","speed_val",16,300)
-section(pMov,"VOO")
+slider(pMov,"Vel","speed_val",16,300)
 botao(pMov,"Fly","fly_on")
-slider(pMov,"Vel. Fly","fly_speed",20,400)
-section(pMov,"OUTROS")
-botao(pMov,"Pulo infinito","jump_on")
+slider(pMov,"Vel Fly","fly_speed",20,400)
+botao(pMov,"Pulo inf","jump_on")
 botao(pMov,"Noclip","noclip_on")
 botao(pMov,"Anti-AFK","antiafk_on")
 
--- === PAGINA VISUAL ===
 local pVis=newPage("vis","VIS")
-section(pVis,"TELA")
 botao(pVis,"Fullbright","fullbright")
 slider(pVis,"Brilho","fullbright_val",1,10)
 botao(pVis,"Mostrar FPS","fps_show")
-botao(pVis,"Mira custom","cross")
-slider(pVis,"Tam. mira","cross_size",2,40)
+botao(pVis,"Mira","cross")
+slider(pVis,"Tam","cross_size",2,40)
 
--- === PAGINA PROT ===
 local pProt=newPage("prot","PROT")
-section(pProt,"PROTECAO")
 botao(pProt,"Anti-void","antivoid")
 botao(pProt,"Anti-fling","antifling")
 
--- === PAGINA CFG ===
 local pCfg=newPage("cfg","CFG")
-section(pCfg,"MENU")
-keybindRow(pCfg,"Tecla Menu (finaliza)","menu_key")
+keybindRow(pCfg,"Tecla Menu","menu_key")
 
 showPage("esp")
 
--- FOV circle
 local fovCircle=Instance.new("Frame")
 fovCircle.AnchorPoint=Vector2.new(0.5,0.5)
 fovCircle.Position=UDim2.fromScale(0.5,0.5)
@@ -424,25 +389,21 @@ fovCircle.Parent=gui
 local fovC=Instance.new("UICorner") fovC.CornerRadius=UDim.new(1,0) fovC.Parent=fovCircle
 local fovS=Instance.new("UIStroke") fovS.Thickness=2 fovS.Color=cfg.c_aim fovS.Parent=fovCircle
 
--- Mira
 local crossH=Instance.new("Frame")
-crossH.Size=UDim2.fromOffset(24,2)
 crossH.AnchorPoint=Vector2.new(0.5,0.5)
 crossH.Position=UDim2.fromScale(0.5,0.5)
-crossH.BackgroundColor3=cfg.c_cross
+crossH.BackgroundColor3=Color3.fromRGB(192,38,211)
 crossH.BorderSizePixel=0
 crossH.Visible=false
 crossH.Parent=gui
 local crossV=Instance.new("Frame")
-crossV.Size=UDim2.fromOffset(2,24)
 crossV.AnchorPoint=Vector2.new(0.5,0.5)
 crossV.Position=UDim2.fromScale(0.5,0.5)
-crossV.BackgroundColor3=cfg.c_cross
+crossV.BackgroundColor3=Color3.fromRGB(192,38,211)
 crossV.BorderSizePixel=0
 crossV.Visible=false
 crossV.Parent=gui
 
--- FPS
 local fpsLbl=Instance.new("TextLabel")
 fpsLbl.Size=UDim2.fromOffset(100,24)
 fpsLbl.Position=UDim2.new(1,-110,0,8)
@@ -464,17 +425,13 @@ local fullOrig={
 }
 
 local function aplicarTudo()
-	-- FOV
 	fovCircle.Visible=cfg.aim_on and cfg.aim_show_fov
 	fovCircle.Size=UDim2.fromOffset(cfg.aim_fov*2,cfg.aim_fov*2)
-	fovS.Color=cfg.c_aim
-	-- Mira
 	crossH.Visible=cfg.cross
 	crossV.Visible=cfg.cross
 	local s=cfg.cross_size*2
 	crossH.Size=UDim2.fromOffset(s,2)
 	crossV.Size=UDim2.fromOffset(2,s)
-	-- Fullbright
 	if cfg.fullbright then
 		Lighting.Brightness=cfg.fullbright_val
 		Lighting.Ambient=Color3.fromRGB(200,200,200)
@@ -492,7 +449,6 @@ local function aplicarTudo()
 	end
 end
 
--- ESP
 local espObjs={}
 local function clearEsp(p)
 	local o=espObjs[p]
@@ -510,30 +466,18 @@ local function makeEsp(p,ch)
 	local root=ch:FindFirstChild("HumanoidRootPart")
 	local hum=ch:FindFirstChildOfClass("Humanoid")
 	if not root or not hum then return end
-	local h=Instance.new("Highlight")
-	h.FillTransparency=1
-	h.Adornee=ch
-	h.Parent=ch
+	local h=Instance.new("Highlight") h.FillTransparency=1 h.Adornee=ch h.Parent=ch
 	local bb=Instance.new("BillboardGui")
-	bb.Size=UDim2.fromOffset(160,40)
-	bb.StudsOffset=Vector3.new(0,3.6,0)
-	bb.AlwaysOnTop=true
-	bb.Adornee=root
-	bb.Parent=ch
+	bb.Size=UDim2.fromOffset(160,40) bb.StudsOffset=Vector3.new(0,3.6,0)
+	bb.AlwaysOnTop=true bb.Adornee=root bb.Parent=ch
 	local t=Instance.new("TextLabel")
-	t.Size=UDim2.fromScale(1,1)
-	t.BackgroundTransparency=1
-	t.Font=Enum.Font.GothamBold
-	t.TextSize=13
-	t.TextStrokeTransparency=0.5
-	t.Parent=bb
+	t.Size=UDim2.fromScale(1,1) t.BackgroundTransparency=1
+	t.Font=Enum.Font.GothamBold t.TextSize=13 t.TextStrokeTransparency=0.5 t.Parent=bb
 	local hpFrame=Instance.new("Frame")
 	hpFrame.Size=UDim2.fromOffset(6,30)
 	hpFrame.BackgroundColor3=Color3.fromRGB(20,20,20)
-	hpFrame.BorderSizePixel=0
-	hpFrame.Visible=false
-	hpFrame.Parent=gui
-	local hpCorner=Instance.new("UICorner") hpCorner.CornerRadius=UDim.new(0,2) hpCorner.Parent=hpFrame
+	hpFrame.BorderSizePixel=0 hpFrame.Visible=false hpFrame.Parent=gui
+	local hpc=Instance.new("UICorner") hpc.CornerRadius=UDim.new(0,2) hpc.Parent=hpFrame
 	local hpFill=Instance.new("Frame")
 	hpFill.Size=UDim2.new(1,0,1,0)
 	hpFill.BackgroundColor3=Color3.fromRGB(74,222,128)
@@ -541,21 +485,14 @@ local function makeEsp(p,ch)
 	hpFill.AnchorPoint=Vector2.new(0,1)
 	hpFill.Position=UDim2.new(0,0,1,0)
 	hpFill.Parent=hpFrame
-	local hfCorner=Instance.new("UICorner") hfCorner.CornerRadius=UDim.new(0,2) hfCorner.Parent=hpFill
+	local hfc=Instance.new("UICorner") hfc.CornerRadius=UDim.new(0,2) hfc.Parent=hpFill
 	local box2d=Instance.new("Frame")
-	box2d.BackgroundTransparency=1
-	box2d.BorderSizePixel=0
-	box2d.Visible=false
-	box2d.Parent=gui
-	local boxStroke=Instance.new("UIStroke")
-	boxStroke.Thickness=1
-	boxStroke.Parent=box2d
+	box2d.BackgroundTransparency=1 box2d.BorderSizePixel=0 box2d.Visible=false box2d.Parent=gui
+	local boxStroke=Instance.new("UIStroke") boxStroke.Thickness=1 boxStroke.Parent=box2d
 	local line=Instance.new("Frame")
 	line.AnchorPoint=Vector2.new(0,0.5)
 	line.BackgroundColor3=cfg.c_enemy
-	line.BorderSizePixel=0
-	line.Visible=false
-	line.Parent=gui
+	line.BorderSizePixel=0 line.Visible=false line.Parent=gui
 	espObjs[p]={hl=h,bb=bb,t=t,hpFrame=hpFrame,hpFill=hpFill,box2d=box2d,boxStroke=boxStroke,line=line,root=root,hum=hum,ch=ch}
 end
 
@@ -572,8 +509,7 @@ RunService.Heartbeat:Connect(function()
 				if o then
 					local d=(o.root.Position-myRoot.Position).Magnitude
 					local show=d<=cfg.esp_range and o.hum.Health>0
-					o.hl.Enabled=show
-					o.bb.Enabled=show
+					o.hl.Enabled=show o.bb.Enabled=show
 					local isTeam=p.Team and LP.Team and p.Team==LP.Team
 					local cor=isTeam and cfg.c_team or cfg.c_enemy
 					o.hl.OutlineColor=cor
@@ -583,17 +519,14 @@ RunService.Heartbeat:Connect(function()
 					if cfg.esp_name then table.insert(parts,p.DisplayName) end
 					if cfg.esp_hp then table.insert(parts,math.floor(o.hum.Health).." HP") end
 					o.t.Text=table.concat(parts," | ")
-
-					-- barra de vida
 					if cfg.esp_hpbar and show then
 						local top=CAM:WorldToViewportPoint(o.root.Position+Vector3.new(0,3,0))
 						local bot=CAM:WorldToViewportPoint(o.root.Position-Vector3.new(0,3,0))
 						if top.Z>0 and bot.Z>0 then
 							local altura=math.abs(bot.Y-top.Y)
-							local largura=6
 							local xOffset=altura*0.35+8
 							o.hpFrame.Visible=true
-							o.hpFrame.Size=UDim2.fromOffset(largura,altura)
+							o.hpFrame.Size=UDim2.fromOffset(6,altura)
 							o.hpFrame.Position=UDim2.fromOffset(top.X+xOffset,top.Y)
 							local pct=math.clamp(o.hum.Health/o.hum.MaxHealth,0,1)
 							o.hpFill.Size=UDim2.new(1,0,pct,0)
@@ -602,8 +535,6 @@ RunService.Heartbeat:Connect(function()
 							else o.hpFill.BackgroundColor3=Color3.fromRGB(239,68,68) end
 						else o.hpFrame.Visible=false end
 					else o.hpFrame.Visible=false end
-
-					-- Caixa 2D
 					if cfg.esp_box2d and show then
 						local top,on=CAM:WorldToViewportPoint(o.root.Position+Vector3.new(0,3,0))
 						local bot=CAM:WorldToViewportPoint(o.root.Position-Vector3.new(0,3,0))
@@ -616,8 +547,6 @@ RunService.Heartbeat:Connect(function()
 							o.boxStroke.Color=cor
 						else o.box2d.Visible=false end
 					else o.box2d.Visible=false end
-
-					-- Tracer
 					if cfg.esp_tracer and show then
 						local tg=CAM:WorldToViewportPoint(o.root.Position)
 						if tg.Z>0 then
@@ -640,7 +569,6 @@ RunService.Heartbeat:Connect(function()
 end)
 Players.PlayerRemoving:Connect(clearEsp)
 
--- Aimbot
 local aimHeld=false
 local aimToggled=false
 local aimBound=false
@@ -738,7 +666,6 @@ end
 local function finalizarTudo()
 	aimHeld=false aimToggled=false stopAim()
 	if gui then gui:Destroy() end
-	print("FOX STORE finalizado")
 end
 
 UIS.InputBegan:Connect(function(i,gp)
@@ -760,4 +687,54 @@ UIS.InputBegan:Connect(function(i,gp)
 		if cfg.aim_toggle then aimToggled=not aimToggled else aimHeld=true end
 		if cfg.aim_on and (aimHeld or aimToggled) then
 			startAim()
-			task.spawn(function
+			task.spawn(function() for k=1,5 do aimLoop() task.wait() end end)
+		end
+		return
+	end
+	if matchKey(i,cfg.trig_key) then trigHeld=true return end
+end)
+
+UIS.InputEnded:Connect(function(i)
+	if matchKey(i,cfg.aim_key) then
+		if not cfg.aim_toggle then aimHeld=false stopAim() end
+	elseif matchKey(i,cfg.trig_key) then trigHeld=false end
+end)
+
+task.spawn(function()
+	while task.wait(0.02) do
+		if not gui or not gui.Parent then return end
+		if cfg.trig_on and trigHeld then
+			local t=getClosest()
+			if t and LP.Character then
+				local tool=LP.Character:FindFirstChildOfClass("Tool")
+				if tool then tool:Activate() end
+				task.wait(cfg.trig_delay/100)
+			end
+		end
+	end
+end)
+
+task.spawn(function()
+	while task.wait(0.03) do
+		if not gui or not gui.Parent then return end
+		if cfg.trig_auto and LP.Character then
+			local myHum=LP.Character:FindFirstChildOfClass("Humanoid")
+			if myHum and myHum.Health>0 then
+				local target=isOnCrosshair()
+				if target then
+					local tool=LP.Character:FindFirstChildOfClass("Tool")
+					if tool then tool:Activate()
+					else
+						local vu=game:GetService("VirtualUser")
+						vu:CaptureController()
+						vu:ClickButton1(Vector2.new())
+					end
+					task.wait(0.05)
+				end
+			end
+		end
+	end
+end)
+
+task.spawn(function()
+	local prev
